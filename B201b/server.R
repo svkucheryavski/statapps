@@ -79,7 +79,7 @@ server <- function(input, output, session) {
     segments(prop, -0.1, prop, max(f), col = 'red')
    
     text(0, max(f) * 1.5, sprintf('Number of samples taken: %d', length(stats$cumstat)), col = '#404040', pos = 4)
-    text(0, max(f) * 1.4, sprintf('95%% confidence interval for population: %.2f...%.2f', mu - 1.96*sigma, mu + 1.96 * sigma), col = '#404040', pos = 4)
+    text(0, max(f) * 1.4, sprintf('95%% confidence interval: %.2f...%.2f', mu - 1.96*sigma, mu + 1.96 * sigma), col = '#404040', pos = 4)
     text(0, max(f) * 1.3, sprintf('%% of cases proportion outside interval: %.2f', badv), col = '#404040', pos = 4)
   })
   
