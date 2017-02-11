@@ -74,7 +74,7 @@ server <- function(input, output, session) {
     points(tail(stats$cumstat, n = 1), 0, col = 'red', pch = 16)
     text(0, max(f) * 1.5, sprintf('Number of samples taken: %d', length(stats$cumstat)), col = '#404040', pos = 4)
     text(0, max(f) * 1.4, sprintf('95%% confidence interval: %.2f...%.2f', mu - 1.96*sigma, mu + 1.96 * sigma), col = '#404040', pos = 4)
-    text(0, max(f) * 1.3, sprintf('%% of samples with proportion outside interval: %.2f', badv), col = '#404040', pos = 4)
+    text(0, max(f) * 1.3, sprintf('%% of samples proportion outside interval: %.2f', badv), col = '#404040', pos = 4)
   })
   
 }
