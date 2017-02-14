@@ -65,7 +65,7 @@ server <- function(input, output, session) {
     x = seq(mu - 3 * sigma, mu + 3 * sigma, length.out = 100)
     f = dnorm(x, mu, sigma)
     
-    par(mar = c(3, 1, 1, 1))
+    par(mar = c(4, 1, 1, 1))
     hist(stats$cumstat, col = '#d0d0d0', freq = FALSE, xlim = c(0, 1), 
          border = 'white', ylim = c(-0.1, max(f) * 1.5),
          xlab = 'Sample proportions', main = '', ylab = '', yaxt = 'n')

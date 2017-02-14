@@ -22,9 +22,9 @@ server <- function(input, output, session) {
     stats$m = mean(stats$sample)
     stats$cumstats = c(stats$cumstats, stats$m)
     stats$s = sd(stats$sample)
-    stats$left = mu + qnorm(0.025) * sigma / sqrt(n)
-    stats$right = mu + qnorm(0.975) * sigma / sqrt(n)
-    stats$inside = c(stats$inside, (stats$m >= stats$left & stats$m <= stats$right))
+    stats$left = stats$m + qt(0.025, n - 1) * stats$s / sqrt(n)
+    stats$right = stats$m + qt(0.975, n - 1) * stats$s / sqrt(n)
+    stats$inside = c(stats$inside, (mu >= stats$left & mu <= stats$right))
   })
   
   observeEvent(input$reset, {
@@ -47,7 +47,7 @@ server <- function(input, output, session) {
 
     par(mar = c(4, 4, 4, 0))
     plot(x, f, xlab = 'Weight, kg', ylab = 'Density', type = 'l', xlim = c(30, 110),
-         col = 'blue', lwd = 2, main = paste('Population (', expression(mu),' = ', mu, ', ', expression(sigma), '=', input$sigma, ')')
+         col = 'blue', lwd = 2, main = paste('Population (mu = ', mu, ', sigma =', input$sigma, ')')
     )
     abline(v = mu, col = 'blue', lty = 2)      
     grid()
@@ -63,20 +63,22 @@ server <- function(input, output, session) {
     if (is.null(stats$cumstats))
       return()
 
-    sigma = as.numeric(input$sigma)
     n = as.numeric(input$n)
-    se = sigma / sqrt(n)
+    m = stats$m    
+    se = stats$s / sqrt(n)
 
-    x = seq(mu - 3.5 * se, mu + 3.5 * se, length.out = 500)
-    f = dnorm(x, mu, se) 
+    x = seq(m + qt(0.005, n - 1) * se, m + qt(0.995, n - 1) * se, length.out = 500)
+    ind = x >= stats$left & x <= stats$right
+    f = dt((x - m)/se, n - 1) 
     
     par(mar = c(4, 1, 1, 1))
-    hist(stats$cumstats, col = '#d0d0d0', freq = FALSE, xlim = c(55, 85), 
-         border = 'white', ylim = c(-0.01, max(f) * 1.6),
-         xlab = 'Sample means', main = '', ylab = '', yaxt = 'n')
-    lines(x, f, col = 'blue', lwd = 2)
-    segments(stats$left, 0, stats$right, 0, col = 'blue', lwd = 1)
-    points(stats$m, 0, col = 'red', pch = 16)
+    plot(x, f, type = 'l', col = 'red', xlim = c(55, 85), lty = 2, ylim = c(-0.01, max(f) * 1.6),
+         xlab = 'Possible population means', main = '', ylab = '', yaxt = 'n', bty = 'n')
+    polygon(c(stats$left, x[ind], stats$right), c(0, f[ind], 0), col = '#fff0f0', border = F)
+    segments(mu, -0.1, mu, max(f), col = 'blue')
+    
+    
+    
     text(56, max(f) * 1.6, sprintf('Current sample: m = %.1f, s = %.1f', stats$m, stats$s), col = '#404040', pos = 4)
     text(56, max(f) * 1.5, sprintf('Number of samples taken: %d', length(stats$cumstats)), col = '#404040', pos = 4)
     text(56, max(f) * 1.4, sprintf('95%% confidence interval: %.2f...%.2f', stats$left, stats$right), col = '#404040', pos = 4)

@@ -72,7 +72,7 @@ server <- function(input, output, session) {
     f = dnorm(x, mu, sigma)
     ind = x >= left & x <= right
     
-    par(mar = c(3, 1, 1, 1))
+    par(mar = c(4, 1, 1, 1))
     plot(x, f, type = 'l', col = 'blue', xlim = c(0, 1), lty = 2, ylim = c(-0.1, max(f) * 1.5),
          xlab = 'Possible population proportions', main = '', ylab = '', yaxt = 'n', bty = 'n')
     polygon(c(left, x[ind], right), c(0, f[ind], 0), col = '#f0f0ff', border = F)
