@@ -72,15 +72,19 @@ server <- function(input, output, session) {
     f = dnorm(x, mu, sigma)
     ind = x >= left & x <= right
     
+    if (mu == 0 || mu == 1)
+      mxf = 1
+    else
+      mxf = max(f)
     par(mar = c(4, 1, 1, 1))
-    plot(x, f, type = 'l', col = 'blue', xlim = c(0, 1), lty = 2, ylim = c(-0.1, max(f) * 1.5),
+    plot(x, f, type = 'l', col = 'blue', xlim = c(0, 1), lty = 2, ylim = c(-0.1, mxf * 1.5),
          xlab = 'Possible population proportions', main = '', ylab = '', yaxt = 'n', bty = 'n')
     polygon(c(left, x[ind], right), c(0, f[ind], 0), col = '#f0f0ff', border = F)
-    segments(prop, -0.1, prop, max(f), col = 'red')
+    segments(prop, -0.1, prop, mxf, col = 'red')
    
-    text(0, max(f) * 1.5, sprintf('Number of samples taken: %d', length(stats$cumstat)), col = '#404040', pos = 4)
-    text(0, max(f) * 1.4, sprintf('95%% confidence interval: %.2f...%.2f', mu - 1.96*sigma, mu + 1.96 * sigma), col = '#404040', pos = 4)
-    text(0, max(f) * 1.3, sprintf('%% of cases proportion outside interval: %.2f', badv), col = '#404040', pos = 4)
+    text(0, mxf * 1.5, sprintf('Number of samples taken: %d', length(stats$cumstat)), col = '#404040', pos = 4)
+    text(0, mxf * 1.4, sprintf('95%% confidence interval: %.2f...%.2f', mu - 1.96*sigma, mu + 1.96 * sigma), col = '#404040', pos = 4)
+    text(0, mxf * 1.3, sprintf('%% of cases proportion outside interval: %.2f', badv), col = '#404040', pos = 4)
   })
   
 }
