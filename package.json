@@ -1,4 +1,23 @@
 {
   "name": "stat-js",
-  "version": "1.0.0"
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tools and methods for statistical analysis.",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "keywords": [
+    "statistics"
+  ],
+  "author": "Sergey Kucheryavskiy",
+  "license": "MIT",
+  "bugs": {
+    "url": ""
+  },
+  "homepage": ""
 }
