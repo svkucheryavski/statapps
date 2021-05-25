@@ -1,6 +1,5 @@
-# Interactive apps for learning statistics
+# A simple library for statistic analysis
 
-A collection of interactive web applications, which can be used for teaching and learning applied statistics. The original version was made using R/Shiny but has been replaces with the current version written using [Svelte](https://svelte.dev), so every app is just a JavaScript file, which can be embed into any HTML page and be used without any server.
 
 You can see the full list and try any app [here]().
 
