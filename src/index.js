@@ -1,42 +1,144 @@
+/**********************************************
+ * Functions for computing single statistics  *
+ **********************************************/
+
 /**
- * Counts how many values from a vector falls into bins
- * @param {Array} x - vector with numbers
- * @param {Array} bins - vector with bins boundaries
- * @returns {Array} vector with counts for each bean
+ * Finds smallest value in a vector
+ * @param {number[]} x - vector with values
+ * @returns {number}
  */
-export const count = function(x, bins) {
+export function min(x) {
+   let n = x.length;
+   let min = Number.POSITIVE_INFINITY
 
-   if (x === undefined || !Array.isArray(x) ||x.length < 2) {
-      throw("count: 'x' must bet a vector with numbers.")
-   }
-
-   if (bins === undefined || !Array.isArray(bins) || bins.length < 2) {
-      throw("count: 'bins' must bet a vector with numbers.")
-   }
-
-   const n = bins.length;
-
-   // add a bit extra to right side
-   bins[n - 1] = bins[n - 1] * 1.0001
-   return bins.slice(1).map((v, i) => x.filter( v => v >= bins[i] & v < bins[i + 1]).length);
+   while (n--) min = x[n] < min ? x[n] : min;
+   return min;
 }
 
 /**
- * Computes middle points between values from a vector
- * @param {Array} x - vector with numbers
- * @returns {Array} vector with middle points
+ * Finds largest value in a vector
+ * @param {number[]} x - vector with values
+ * @returns {number}
  */
-export const mids = function(x) {
-   const d = diff(x)
-   return(x.slice(1).map((v, i) => (v - d[i])));
+export function max(x) {
+   let n = x.length;
+   let max = Number.NEGATIVE_INFINITY
+
+   while (n--) max = x[n] > max ? x[n] : max;
+   return max;
+}
+
+/**
+ * Computes sum of all value in a vector
+ * @param {number[]} x - vector with values
+ * @returns {number}
+ */
+export function sum(x) {
+   return x.reduce((t, v) => t + v);
+}
+
+/**
+ * Computes mean (average) value for a vector
+ * @param {number[]} x - vector with values
+ * @returns {number}
+ */
+export function mean(x) {
+   return sum(x) / x.length;
+}
+
+/**
+ * Computes standard deviation for a vector
+ * @param {number[]} x - vector with values
+ * @param {boolean} biased - compute a biased version with n degrees of freedom or not (with n-1).
+ * @param {number} m - mean value (e.g. if already computed).
+ * @returns {number}
+ */
+export function sd(x, biased = false, m = undefined) {
+   if (m === undefined) m = mean(x)
+   return Math.sqrt(sum(x.map(v => (v - m)**2 )) / (x.length - (biased ? 0 : 1)));
+}
+
+/**
+ * Computes a p-th quantile for a numeric vector
+ * @param {number[]} x - vector with values
+ * @param {number} p - probability
+ * @returns {number}
+ */
+export function quantile(x, p) {
+
+   if (typeof(p) !== "number" || p < 0 || p > 1) {
+      throw("Parameter 'p' must be between 0 and 1 (both included).");
+   }
+
+   x = sort(x);
+   const n = x.length;
+   const h = (n - 1) * p + 1;
+   const n1 = Math.floor(h);
+   const n2 = Math.ceil(h);
+
+   return x[n1 - 1] + (x[n2 - 1] - x[n1 - 1]) * (h - Math.floor(h));
+}
+
+/***************************************************
+ * Functions for computing vectors of statistics   *
+ ***************************************************/
+
+/**
+ * Generate a sequence of n numbers between min and max.
+ * @param {number} min - first value in the sequence
+ * @param {number} max - last value in the sequence
+ * @param {number} n - number of values in the sequence
+ * @returns {number[]} array with the sequence values
+ */
+export function seq(min, max, n) {
+   if (n < 3) {
+      throw("Parameter 'n' should be larger than 3.")
+   }
+
+   const step = (max - min + 0.0) / (n - 1 + 0.0)
+   let out = [...Array(n)].map((x, i) => min + i * step);
+
+   // if step is smaller than 1 round values to remove small decimals accidentiall added by JS
+   if (Math.abs(step) < 1) {
+      const r = Math.pow(10, Math.round(-Math.log10(step)));
+      out = out.map(v => Math.round((v + Number.EPSILON) * r) / r)
+   }
+
+   return(out)
+}
+
+
+
+/**
+ * Finds a range of values in a vector (min and max)
+ * @param {number[]} x - vector with values
+ * @returns {number[]} array with min and max values
+ */
+export function range(x) {
+   return [min(x), max(x)];
+}
+
+/**
+ * Computes a range of values in a vector with a margin
+ * @param {number[]} x - vector with values
+ * @param {number} margin - margin in parts of one (e.g. 0.1 for 10% or 2 for 200%)
+ * @returns{number[]} array with marginal range boundaries
+ */
+export function mrange(x, margin) {
+   const mn = min(x);
+   const mx = max(x);
+   const d = mx - mn;
+
+   return [mn - d * margin, max(x) + d * margin];
 }
 
 /**
  * Splits range of vector values into equal intervals
- * @param {Array} x - vector with numbers
+ * @param {number[]} x - vector with values
  * @param {number} n - number of intervals
+ * @returns {number[]} vector with boundaries of the intervals
  */
-export const split = function(x, n) {
+export function split(x, n) {
    if (x === undefined || !Array.isArray(x) || x.length < 2) {
       throw("split: 'x' must bet a vector with numbers.")
    }
@@ -56,82 +158,108 @@ export const split = function(x, n) {
    return Array.from({length: n + 1}, (v, i) => mn + i * step + 0.0);
 }
 
+
 /**
- *
- * @param {*} x
- * @returns
+ * Counts how many values from a vector falls into provided intervals (bins)
+ * @param {number[]} x - vector with values
+ * @param {number[]} bins - vector with bins boundaries
+ * @returns {number[]} vector with counts for each bean
+ */
+export function count(x, bins) {
+
+   if (x === undefined || !Array.isArray(x) ||x.length < 2) {
+      throw("count: 'x' must be a vector with numbers.")
+   }
+
+   if (bins === undefined || !Array.isArray(bins) || bins.length < 2) {
+      throw("count: 'bins' must be a vector with numbers.")
+   }
+
+   const n = bins.length;
+
+   // add a bit extra to right side of the last bin
+   bins[n - 1] = bins[n - 1] * 1.0001
+   return bins.slice(1).map((v, i) => x.filter( v => v >= bins[i] & v < bins[i + 1]).length);
+}
+
+/**
+ * Computes middle points between values of a vector
+ * @param {number[]} x - vector with values
+ * @returns {number[]} vector with middle points
+ */
+export const mids = function(x) {
+   return x.slice(1).map((v, i) => (0.5 * (v + x[i])));
+}
+
+/**
+ * Computes difference between all adjacent values in a vector
+ * @param {number[]} x - vector with values
+ * @returns {number[]} vector with the differences
  */
 export function diff(x) {
    return x.slice(1).map( (y, i) => (y - x[i]));
 }
 
-export function min(x) {
-   return Math.min.apply(null, x);
+/**
+ * Sorts values in a vector
+ * @param {Array} x - vector with values
+ * @returns {Array} vector with sorted values
+ */
+export function sort(x, decreasing = false) {
+   return decreasing ? x.sort((a, b) => b - a) : x.sort((a, b) => a - b);
 }
 
-export function sum(x) {
-   return x.reduce((t, v) => t + v);
-}
 
-export function max(x) {
-   return Math.max.apply(null, x);
-}
+/**
+ * Finds outliers in a vector based on inter-quartile range distance
+ * @param {Array} x - vector with values
+ * @param {number} Q1 - first quartile (optional parameter)
+ * @param {Array} Q3 - third quartile (optional parameter)
+ * @returns {Array} vector with outliers or empty vector if none were found.
+ */
+export function getOutliers(x, Q1 = undefined, Q3 = undefined) {
 
-export function range(x) {
-   return [min(x), max(x)];
-}
+   if (Q1 === undefined) Q1 = quantile(x, 0.25);
+   if (Q3 === undefined) Q3 = quantile(x, 0.75);
 
-export function mrange(x, margin) {
-   const mn = min(x);
-   const mx = max(x);
-   const d = mx - mn;
-
-   return [mn - d * margin, max(x) + d * margin];
-}
-
-export function getOutliers(x, Q1, Q3) {
    const IQR = Q3 - Q1;
    const bl = Q1 - 1.5 * IQR
    const bu = Q3 + 1.5 * IQR
    return(x.filter(v => v < bl || v > bu));
 }
 
-/** Computes a quantile for a numeric vector
- *  @param {Array} x - numeric vector
- *  @param {number} p - a number between 0 and 1 (quantile)
-*/
-export function quantile(x, p) {
+/*******************************************
+ * Functions for theoretical distributions *
+ *******************************************/
 
-   if (p < 0 || p > 1) {
-      throw("Parameter 'p' must be between 0 and 1.");
-   }
-
-   if (!Array.isArray(x) || x.length < 2) {
-      throw("Parameter 'x' must be a vector with numbers.");
-   }
-
-   const n = x.length;
-   const n1 = Math.floor((n + 1) * p);
-   const n2 = Math.ceil((n + 1) * p);
-
-   if (n1 == n2) {
-      return x[n1 - 1];
-   }
-
-   const p1 = (n1 - 0.5) / n;
-   const p2 = (n2 - 0.5) / n;
-   return(x[n1 - 1] + (x[n2 - 1] - x[n1 - 1]) / (p2 - p1) * (p - p1));
+/**
+ * Generates 'n' random numbers from a uniform distribution
+ * @param {number} n - amount of numbers to generate
+ * @param {number} a - smallest value (min) of the population
+ * @param {number} b - largest value (max) of the population
+ * @returns {number[]} vector with generated numbers
+ */
+export function runif(n, a = 0, b = 1) {
+   let out = [];
+   for (let i = 0; i < n; i++) out.push(a + Math.random() * (b - a));
+   return out;
 }
 
-export function runif(n, a, b) {
-   return Array.from({length: n}, () => (a + Math.random() * (b - a)));
-}
+/**
+ * Generates 'n' random numbers from a normal distribution
+ * @param {number} n - amount of numbers to generate
+ * @param {number} mu - average value of the population
+ * @param {number} sigma - standard deviation of the population
+ * @returns {Array} vector with generated numbers
+ */
+export function rnorm(n, mu = 0, sigma = 1) {
 
-export function rnorm(n, mu, sigma) {
-   const u = runif(n * 2, 0, 1);
-   const a = u.filter( (v, i) => i % 2 === 0 ).map( u1 => Math.sqrt(-2 * Math.log(u1)))
-   const b = u.filter( (v, i) => i % 2 === 1 ).map( u2 => 2 * 3.1415926 * u2)
-
-   return a.map((v, i) => v * Math.sin(b[i]) * sigma + mu);
+   let out = [];
+   for (let i = 0; i < n; i ++) {
+      const a = Math.sqrt(-2 * Math.log(Math.random()));
+      const b = 2 * Math.PI * Math.random();
+      out.push(a * Math.sin(b) * sigma + mu);
+   }
+   return out;
 }
 
