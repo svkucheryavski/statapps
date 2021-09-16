@@ -280,3 +280,20 @@ export function rnorm(n, mu = 0, sigma = 1) {
    return out;
 }
 
+/**
+ * Computes density for given vector of values using normal distribution
+ * @param {Array} x - vector of values
+ * @param {number} mu - average value of the population
+ * @param {number} sigma - standard deviation of the population
+ * @returns {Array} vector with densities
+ */
+export function dnorm(x, mu = 0, sigma = 1) {
+   if (!Array.isArray(x)) {
+      throw("Parameter 'x' must be an array.")
+   }
+
+   const A = 1 / (Math.sqrt(2 * Math.PI) * sigma);
+   const frac = -0.5 / sigma ** 2;
+
+   return x.map((v) => A * Math.exp(frac * ((v - mu) ** 2)))
+}
