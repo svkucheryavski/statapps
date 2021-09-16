@@ -91,6 +91,7 @@ export function quantile(x, p) {
  * @returns {number[]} array with the sequence values
  */
 export function seq(min, max, n) {
+
    if (n < 3) {
       throw("Parameter 'n' should be larger than 3.")
    }
@@ -98,9 +99,9 @@ export function seq(min, max, n) {
    const step = (max - min + 0.0) / (n - 1 + 0.0)
    let out = [...Array(n)].map((x, i) => min + i * step);
 
-   // if step is smaller than 1 round values to remove small decimals accidentiall added by JS
+   // if step is smaller than 1 round values to remove small decimals accidentally added by JS
    if (Math.abs(step) < 1) {
-      const r = Math.pow(10, Math.round(-Math.log10(step)));
+      const r = Math.pow(10, Math.round(-Math.log10(step)) + 1);
       out = out.map(v => Math.round((v + Number.EPSILON) * r) / r)
    }
 
