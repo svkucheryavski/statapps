@@ -1,7 +1,7 @@
 
 import {min, max, sum, mean, sd, quantile} from '../src/index.js';
 import {range, mrange, split, count, mids, diff, sort, getOutliers, seq} from '../src/index.js';
-import {runif, rnorm} from '../src/index.js';
+import {runif, rnorm, dnorm, dunif} from '../src/index.js';
 import {default as chai} from 'chai';
 
 const should = chai.should();
@@ -211,6 +211,7 @@ describe('Simple test for functions computing vectors with statistics.', functio
 
 
 describe('Tests for theoretical distribution functions.', function () {
+
    it('runif() works correctly (n = 1 000 000).', function () {
       const n = 1000000;
       const r1 = runif(n);
@@ -234,4 +235,65 @@ describe('Tests for theoretical distribution functions.', function () {
       min(r1).should.be.above(-6);
       max(r1).should.be.below(6);
    });
+
+   it('dnorm() works correctly (n = 1 000 000).', function () {
+      const n = 1000000;
+
+      // standardized distribution for ± 3 sigma
+      const x1 = seq(-3, 3, n);
+      const d1 = dnorm(x1);
+      expect(d1).to.have.lengthOf(n);
+      d1[0].should.be.closeTo(0.004431848, 0.00000001);
+      d1[n-1].should.be.closeTo(0.004431848, 0.00000001);
+      d1[n/2].should.be.closeTo(0.3989423, 0.0000001);
+
+      // distribution with mu = 10 and sigma = 10, for ± 3 sigma
+      const mu = 10;
+      const sigma = 10
+      const x2 = seq(mu - 3 * sigma, mu + 3 * sigma, n);
+      const d2 = dnorm(x2, mu, sigma);
+      expect(d2).to.have.lengthOf(n);
+      d2[0].should.be.closeTo(0.0004431848, 0.00000001);
+      d2[n-1].should.be.closeTo(0.0004431848, 0.00000001);
+      d2[n/2].should.be.closeTo(0.03989423, 0.0000001);
+
+      // distribution with mu = 10 and sigma = 10, for ± 6 sigma should have area of one
+      const x3 = seq(mu - 6 * sigma, mu + 6 * sigma, n);
+      const d3 = dnorm(x3, mu, sigma);
+      expect(d3).to.have.lengthOf(n);
+      (sum(d3) * 12 * sigma/n).should.be.closeTo(1.0, 0.000001);
+
+      // if values are far from mean density is 0
+      dnorm([mu - 6 * sigma], mu, sigma)[0].should.be.closeTo(0.0, 0.0000001);
+      dnorm([mu + 6 * sigma], mu, sigma)[0].should.be.closeTo(0.0, 0.0000001);
+   });
+
+   it('dunif() works correctly (n = 1 000 000).', function () {
+      const n = 1000000;
+
+      // standardized distribution for a = 0, b = 1
+      const x1 = seq(0, 1, n);
+      const d1 = dunif(x1);
+
+      expect(d1).to.have.lengthOf(n);
+      d1[0].should.be.closeTo(1,   0.0000000001);
+      d1[n-1].should.be.closeTo(1, 0.0000000001);
+      d1[n/2].should.be.closeTo(1, 0.0000000001);
+
+      // distribution with mu = 10 and sigma = 10, for ± 3 sigma
+      const a = 10;
+      const b = 100;
+      const x2 = seq(a, b, n);
+      const d2 = dunif(x2, a, b);
+
+      expect(d2).to.have.lengthOf(n);
+      d2[0].should.be.closeTo(1 / (b - a),   0.00000001);
+      d2[n-1].should.be.closeTo(1 / (b - a), 0.00000001);
+      d2[n/2].should.be.closeTo(1 / (b - a), 0.00000001);
+      (sum(d2) * (b - a)/n).should.be.closeTo(1.0, 0.000001);
+
+      dunif([a - 0.0000001], a, b)[0].should.be.closeTo(0.0, 0.0000001);
+      dunif([b + 0.0000001], a, b)[0].should.be.closeTo(0.0, 0.0000001);
+   });
+
 });
