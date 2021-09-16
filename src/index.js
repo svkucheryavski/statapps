@@ -247,6 +247,22 @@ export function runif(n, a = 0, b = 1) {
 }
 
 /**
+ * Computes density for given vector of values using uniform distribution
+ * @param {Array} x - vector of values
+ * @param {number} a - smallest value (min) of the population
+ * @param {number} b - largest value (max) of the population
+ * @returns {Array} vector with densities
+ */
+export function dunif(x, a = 0, b = 1) {
+   if (!Array.isArray(x)) {
+      throw("Parameter 'x' must be an array.")
+   }
+
+   return x.map((v) => (v >= a && v <= b) ? 1 / (b - a) : 0);
+}
+
+
+ /**
  * Generates 'n' random numbers from a normal distribution
  * @param {number} n - amount of numbers to generate
  * @param {number} mu - average value of the population
