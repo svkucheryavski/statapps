@@ -1,7 +1,7 @@
 
 import {min, max, sum, mean, sd, quantile} from '../src/index.js';
 import {range, mrange, split, count, mids, diff, sort, getOutliers, seq} from '../src/index.js';
-import {runif, rnorm, dnorm, dunif, erf, pnorm} from '../src/index.js';
+import {runif, rnorm, dnorm, dunif, pnorm, punif} from '../src/index.js';
 import {default as chai} from 'chai';
 
 const should = chai.should();
@@ -268,6 +268,7 @@ describe('Tests for theoretical distribution functions.', function () {
       dnorm([mu + 6 * sigma], mu, sigma)[0].should.be.closeTo(0.0, 0.0000001);
    });
 
+
    it('dunif() works correctly (n = 1 000 000).', function () {
       const n = 1000000;
 
@@ -319,5 +320,32 @@ describe('Tests for theoretical distribution functions.', function () {
       p2[n-1].should.be.closeTo(0.998650, 0.000001);
       p2[n/2].should.be.closeTo(0.5, 0.00001);
 
+   });
+
+   it('punif() works correctly (n = 1 000 000).', function () {
+      const n = 1000000;
+
+      // standardized distribution for a = 0, b = 1
+      const x1 = seq(0, 1, n);
+      const p1 = punif(x1);
+
+      expect(p1).to.have.lengthOf(n);
+      p1[0].should.be.closeTo(0, 0.00001);
+      p1[n-1].should.be.closeTo(1, 0.00001);
+      p1[n/2].should.be.closeTo(0.5, 0.00001);
+
+      // outside the range
+      punif([-0.000001])[0].should.be.closeTo(0, 0.00001);
+      punif([ 1.000001])[0].should.be.closeTo(1, 0.00001);
+
+      // distribution with mu = 10 and sigma = 10, for ± 3 sigma
+      const a = 10;
+      const b = 100;
+      const x2 = seq(a, b, n);
+      const p2 = punif(x2, a, b);
+
+      expect(p2).to.have.lengthOf(n);
+      punif([a - 0.0000001], a, b)[0].should.be.closeTo(0.0, 0.00001);
+      punif([b + 0.0000001], a, b)[0].should.be.closeTo(1.0, 0.00001);
    });
 });

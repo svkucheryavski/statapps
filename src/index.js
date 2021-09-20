@@ -247,7 +247,7 @@ export function runif(n, a = 0, b = 1) {
 }
 
 /**
- * Computes density for given vector of values using uniform distribution
+ * Probability density function for uniform distribution
  * @param {Array} x - vector of values
  * @param {number} a - smallest value (min) of the population
  * @param {number} b - largest value (max) of the population
@@ -259,6 +259,22 @@ export function dunif(x, a = 0, b = 1) {
    }
 
    return x.map((v) => (v >= a && v <= b) ? 1 / (b - a) : 0);
+}
+
+/**
+ * Cumulative distribution function for uniform distribution
+ * @param {Array} x - vector of values
+ * @param {number} a - smallest value (min) of the population
+ * @param {number} b - largest value (max) of the population
+ * @returns {Array} vector with probabilities
+ */
+export function punif(x, a = 0, b = 1) {
+
+   if (!Array.isArray(x)) {
+      throw("Parameter 'x' must be an array.")
+   }
+
+   return x.map(v => v < a ? 0 : (v - a) / (b - a));
 }
 
 
@@ -282,7 +298,7 @@ export function rnorm(n, mu = 0, sigma = 1) {
 
 
 /**
- * Computes density for given vector of values using normal distribution
+ * Probability density function for normal distribution
  * @param {Array} x - vector of values
  * @param {number} mu - average value of the population
  * @param {number} sigma - standard deviation of the population
@@ -300,11 +316,11 @@ export function dnorm(x, mu = 0, sigma = 1) {
 }
 
 /**
- * Computes probability for given vector of values using normal distribution
+ * Cumulative distribution function for normal distribution
  * @param {Array} x - vector of values
  * @param {number} mu - average value of the population
  * @param {number} sigma - standard deviation of the population
- * @returns {Array} vector with densities
+ * @returns {Array} vector with probabilities
  */
 export function pnorm(x, mu = 0, sigma = 1) {
 
@@ -313,12 +329,12 @@ export function pnorm(x, mu = 0, sigma = 1) {
    }
 
    const frac = 1 / (Math.sqrt(2) * sigma);
-   return x.map(v => (0.5 * (1 + erf( (v - mu) * frac))));
+   return x.map(v => (0.5 * (1 + erf((v - mu) * frac))));
 }
 
 
 /**
- * Computes value of error function (normal distribution)
+ * Error function for normal distribution
  * @param {number} x - a number
  * @returns {number} value for erf
  */
