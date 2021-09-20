@@ -258,7 +258,15 @@ export function dunif(x, a = 0, b = 1) {
       throw("Parameter 'x' must be an array.")
    }
 
-   return x.map(v => (v >= a && v <= b) ? 1 / (b - a) : 0);
+   const n = x.length;
+   const A = 1 / (b - a);
+   let d = Array(n);
+
+   for (let i = 0; i < n; i++) {
+      d[i] = (x[i] < a || x[i] > b ) ? 0 : A;
+   }
+
+   return d;
 }
 
 /**
@@ -274,8 +282,20 @@ export function punif(x, a = 0, b = 1) {
       throw("Parameter 'x' must be an array.")
    }
 
-   const p = x.map(v => v < a ? 0 : (v - a) / (b - a));
-   return(p.map(v => v > 1 ? 1: v))
+   const n = x.length;
+   let p = Array(n);
+
+   for (let i = 0; i < n; i++) {
+      if (x[i] < a) {
+         p[i] = 0;
+      } else if (x[i] > b) {
+         p[i] = 1;
+      } else {
+         p[i] = (x[i] - a) / (b - a)
+      }
+   }
+
+   return p;
 }
 
 
@@ -288,12 +308,13 @@ export function punif(x, a = 0, b = 1) {
  */
 export function rnorm(n, mu = 0, sigma = 1) {
 
-   let out = [];
+   let out = Array(n);
    for (let i = 0; i < n; i ++) {
       const a = Math.sqrt(-2 * Math.log(Math.random()));
       const b = 2 * Math.PI * Math.random();
-      out.push(a * Math.sin(b) * sigma + mu);
+      out[i] = (a * Math.sin(b) * sigma + mu);
    }
+
    return out;
 }
 
@@ -306,14 +327,22 @@ export function rnorm(n, mu = 0, sigma = 1) {
  * @returns {Array} vector with densities
  */
 export function dnorm(x, mu = 0, sigma = 1) {
+
    if (!Array.isArray(x)) {
       throw("Parameter 'x' must be an array.");
    }
 
+   const n = x.length;
    const A = 1 / (Math.sqrt(2 * Math.PI) * sigma);
    const frac = -0.5 / sigma ** 2;
 
-   return x.map((v) => A * Math.exp(frac * ((v - mu) ** 2)));
+   let d = Array(n);
+   for (let i = 0; i < n; i++) {
+      const df = x[i] - mu;
+      d[i] = A * Math.exp(frac * df * df);
+   }
+
+   return d;
 }
 
 /**
@@ -329,8 +358,15 @@ export function pnorm(x, mu = 0, sigma = 1) {
       throw("Parameter 'x' must be an array.");
    }
 
+   const n = x.length;
    const frac = 1 / (Math.sqrt(2) * sigma);
-   return x.map(v => (0.5 * (1 + erf((v - mu) * frac))));
+
+   let p = Array(n);
+   for (let i = 0; i < n; i++) {
+      p[i] = 0.5 * (1 + erf((x[i] - mu) * frac))
+   }
+
+   return p;
 }
 
 
