@@ -258,7 +258,7 @@ export function dunif(x, a = 0, b = 1) {
       throw("Parameter 'x' must be an array.")
    }
 
-   return x.map((v) => (v >= a && v <= b) ? 1 / (b - a) : 0);
+   return x.map(v => (v >= a && v <= b) ? 1 / (b - a) : 0);
 }
 
 /**
@@ -274,7 +274,8 @@ export function punif(x, a = 0, b = 1) {
       throw("Parameter 'x' must be an array.")
    }
 
-   return x.map(v => v < a ? 0 : (v - a) / (b - a));
+   const p = x.map(v => v < a ? 0 : (v - a) / (b - a));
+   return(p.map(v => v > 1 ? 1: v))
 }
 
 

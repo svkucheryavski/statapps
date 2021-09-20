@@ -335,8 +335,8 @@ describe('Tests for theoretical distribution functions.', function () {
       p1[n/2].should.be.closeTo(0.5, 0.00001);
 
       // outside the range
-      punif([-0.000001])[0].should.be.closeTo(0, 0.00001);
-      punif([ 1.000001])[0].should.be.closeTo(1, 0.00001);
+      punif([-1])[0].should.be.closeTo(0, 0.00001);
+      punif([ 1])[0].should.be.closeTo(1, 0.00001);
 
       // distribution with mu = 10 and sigma = 10, for ± 3 sigma
       const a = 10;
@@ -345,7 +345,7 @@ describe('Tests for theoretical distribution functions.', function () {
       const p2 = punif(x2, a, b);
 
       expect(p2).to.have.lengthOf(n);
-      punif([a - 0.0000001], a, b)[0].should.be.closeTo(0.0, 0.00001);
-      punif([b + 0.0000001], a, b)[0].should.be.closeTo(1.0, 0.00001);
+      punif([a - 10], a, b)[0].should.be.closeTo(0.0, 0.00001);
+      punif([b + 10], a, b)[0].should.be.closeTo(1.0, 0.00001);
    });
 });
