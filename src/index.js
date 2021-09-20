@@ -280,6 +280,7 @@ export function rnorm(n, mu = 0, sigma = 1) {
    return out;
 }
 
+
 /**
  * Computes density for given vector of values using normal distribution
  * @param {Array} x - vector of values
@@ -289,11 +290,53 @@ export function rnorm(n, mu = 0, sigma = 1) {
  */
 export function dnorm(x, mu = 0, sigma = 1) {
    if (!Array.isArray(x)) {
-      throw("Parameter 'x' must be an array.")
+      throw("Parameter 'x' must be an array.");
    }
 
    const A = 1 / (Math.sqrt(2 * Math.PI) * sigma);
    const frac = -0.5 / sigma ** 2;
 
-   return x.map((v) => A * Math.exp(frac * ((v - mu) ** 2)))
+   return x.map((v) => A * Math.exp(frac * ((v - mu) ** 2)));
+}
+
+/**
+ * Computes probability for given vector of values using normal distribution
+ * @param {Array} x - vector of values
+ * @param {number} mu - average value of the population
+ * @param {number} sigma - standard deviation of the population
+ * @returns {Array} vector with densities
+ */
+export function pnorm(x, mu = 0, sigma = 1) {
+
+   if (!Array.isArray(x)) {
+      throw("Parameter 'x' must be an array.");
+   }
+
+   const frac = 1 / (Math.sqrt(2) * sigma);
+   return x.map(v => (0.5 * (1 + erf( (v - mu) * frac))));
+}
+
+
+/**
+ * Computes value of error function (normal distribution)
+ * @param {number} x - a number
+ * @returns {number} value for erf
+ */
+export function erf(x) {
+
+  const sign = (x >= 0) ? 1 : -1;
+  x = Math.abs(x);
+
+  // constants
+  const a1 =  0.254829592;
+  const a2 = -0.284496736;
+  const a3 =  1.421413741;
+  const a4 = -1.453152027;
+  const a5 =  1.061405429;
+  const p  =  0.3275911;
+
+  // approximation
+  const t = 1.0 / (1.0 + p * x);
+  const y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
+  return sign * y;
 }
