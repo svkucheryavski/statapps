@@ -1,7 +1,7 @@
 
 import {min, max, sum, mean, sd, quantile} from '../src/index.js';
 import {range, mrange, split, count, mids, diff, sort, getOutliers, seq} from '../src/index.js';
-import {runif, rnorm, dnorm, dunif, pnorm, punif} from '../src/index.js';
+import {runif, rnorm, dnorm, dunif, pnorm, punif, ppoints} from '../src/index.js';
 import {default as chai} from 'chai';
 
 const should = chai.should();
@@ -347,5 +347,38 @@ describe('Tests for theoretical distribution functions.', function () {
       expect(p2).to.have.lengthOf(n);
       punif([a - 10], a, b)[0].should.be.closeTo(0.0, 0.00001);
       punif([b + 10], a, b)[0].should.be.closeTo(1.0, 0.00001);
+   });
+
+});
+
+describe('Tests for other functions.', function () {
+   it('ppoints() works correctly.', function () {
+
+      const p1 = ppoints(1);
+      expect(p1).to.have.lengthOf(1);
+      p1[0].should.be.closeTo(0.5, 0.0000001);
+
+      const p2 = ppoints(3);
+      expect(p2).to.have.lengthOf(3);
+      p2[0].should.be.closeTo(0.1923077, 0.0000001);
+      p2[1].should.be.closeTo(0.5000000, 0.0000001);
+      p2[2].should.be.closeTo(0.8076923, 0.0000001);
+
+      const p3 = ppoints(5);
+      expect(p3).to.have.lengthOf(5);
+      p3[0].should.be.closeTo(0.1190476, 0.0000001);
+      p3[1].should.be.closeTo(0.3095238, 0.0000001);
+      p3[2].should.be.closeTo(0.5000000, 0.0000001);
+      p3[3].should.be.closeTo(0.6904762, 0.0000001);
+      p3[4].should.be.closeTo(0.8809524, 0.0000001);
+
+      const p4 = ppoints(11);
+      expect(p4).to.have.lengthOf(11);
+      p4[ 0].should.be.closeTo(0.04545455, 0.0000001);
+      p4[ 3].should.be.closeTo(0.31818182, 0.0000001);
+      p4[ 5].should.be.closeTo(0.50000000, 0.0000001);
+      p4[ 7].should.be.closeTo(0.68181818, 0.0000001);
+      p4[10].should.be.closeTo(0.95454545, 0.0000001);
+
    });
 });

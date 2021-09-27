@@ -369,7 +369,6 @@ export function pnorm(x, mu = 0, sigma = 1) {
    return p;
 }
 
-
 /**
  * Error function for normal distribution
  * @param {number} x - a number
@@ -392,4 +391,14 @@ export function erf(x) {
   const t = 1.0 / (1.0 + p * x);
   const y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
   return sign * y;
+}
+
+/**
+ * Generate probability points for QQ plot
+ * @param {number} n - number of points
+ * @returns {Array} a sequence of probabilities between 0 and 1
+ */
+export function ppoints(n) {
+   const a = n < 10 ? 3.0/8.0 : 0.5;
+   return Array.from({length: n}, (v, i) => (i + 1 - a) / (n + (1 - a) - a));
 }
