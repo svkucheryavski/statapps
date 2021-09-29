@@ -1,5 +1,5 @@
 
-import {min, max, sum, mean, sd, quantile} from '../src/index.js';
+import {min, max, sum, mean, sd, quantile, skewness} from '../src/index.js';
 import {range, mrange, split, count, mids, diff, sort, getOutliers, seq} from '../src/index.js';
 import {runif, rnorm, dnorm, dunif, pnorm, punif, ppoints} from '../src/index.js';
 import {default as chai} from 'chai';
@@ -85,6 +85,11 @@ describe('Simple test for functions computing single statistic.', function () {
       quantile(x1, 0.10).should.be.closeTo(P10, 0.000001);
       quantile(x1, 0.90).should.be.closeTo(P90, 0.000001);
    });
+
+   it('skewness() returns correct results.', function() {
+      skewness([-10, 1, 2]).should.be.closeTo(-0.6892055, 0.0000001);
+      skewness([10, 1, 2]).should.be.closeTo(0.6745555, 0.0000001);
+   })
 
 });
 
@@ -207,6 +212,34 @@ describe('Simple test for functions computing vectors with statistics.', functio
       expect(s3).to.eql([0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]);
    });
 
+   it('ppoints() works correctly.', function () {
+
+      const p1 = ppoints(1);
+      expect(p1).to.have.lengthOf(1);
+      p1[0].should.be.closeTo(0.5, 0.0000001);
+
+      const p2 = ppoints(3);
+      expect(p2).to.have.lengthOf(3);
+      p2[0].should.be.closeTo(0.1923077, 0.0000001);
+      p2[1].should.be.closeTo(0.5000000, 0.0000001);
+      p2[2].should.be.closeTo(0.8076923, 0.0000001);
+
+      const p3 = ppoints(5);
+      expect(p3).to.have.lengthOf(5);
+      p3[0].should.be.closeTo(0.1190476, 0.0000001);
+      p3[1].should.be.closeTo(0.3095238, 0.0000001);
+      p3[2].should.be.closeTo(0.5000000, 0.0000001);
+      p3[3].should.be.closeTo(0.6904762, 0.0000001);
+      p3[4].should.be.closeTo(0.8809524, 0.0000001);
+
+      const p4 = ppoints(11);
+      expect(p4).to.have.lengthOf(11);
+      p4[ 0].should.be.closeTo(0.04545455, 0.0000001);
+      p4[ 3].should.be.closeTo(0.31818182, 0.0000001);
+      p4[ 5].should.be.closeTo(0.50000000, 0.0000001);
+      p4[ 7].should.be.closeTo(0.68181818, 0.0000001);
+      p4[10].should.be.closeTo(0.95454545, 0.0000001);
+   });
 });
 
 
@@ -351,34 +384,3 @@ describe('Tests for theoretical distribution functions.', function () {
 
 });
 
-describe('Tests for other functions.', function () {
-   it('ppoints() works correctly.', function () {
-
-      const p1 = ppoints(1);
-      expect(p1).to.have.lengthOf(1);
-      p1[0].should.be.closeTo(0.5, 0.0000001);
-
-      const p2 = ppoints(3);
-      expect(p2).to.have.lengthOf(3);
-      p2[0].should.be.closeTo(0.1923077, 0.0000001);
-      p2[1].should.be.closeTo(0.5000000, 0.0000001);
-      p2[2].should.be.closeTo(0.8076923, 0.0000001);
-
-      const p3 = ppoints(5);
-      expect(p3).to.have.lengthOf(5);
-      p3[0].should.be.closeTo(0.1190476, 0.0000001);
-      p3[1].should.be.closeTo(0.3095238, 0.0000001);
-      p3[2].should.be.closeTo(0.5000000, 0.0000001);
-      p3[3].should.be.closeTo(0.6904762, 0.0000001);
-      p3[4].should.be.closeTo(0.8809524, 0.0000001);
-
-      const p4 = ppoints(11);
-      expect(p4).to.have.lengthOf(11);
-      p4[ 0].should.be.closeTo(0.04545455, 0.0000001);
-      p4[ 3].should.be.closeTo(0.31818182, 0.0000001);
-      p4[ 5].should.be.closeTo(0.50000000, 0.0000001);
-      p4[ 7].should.be.closeTo(0.68181818, 0.0000001);
-      p4[10].should.be.closeTo(0.95454545, 0.0000001);
-
-   });
-});
