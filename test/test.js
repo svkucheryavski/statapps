@@ -1,7 +1,7 @@
 
-import {min, max, sum, mean, sd, quantile, skewness} from '../src/index.js';
-import {range, mrange, split, count, mids, diff, sort, getOutliers, seq} from '../src/index.js';
-import {runif, rnorm, dnorm, dunif, pnorm, punif, ppoints} from '../src/index.js';
+import {min, max, sum, mean, sd, quantile, skewness, kurtosis} from '../src/index.js';
+import {range, mrange, split, count, mids, diff, sort, getOutliers, seq, ppoints} from '../src/index.js';
+import {runif, rnorm, dnorm, dunif, pnorm, punif} from '../src/index.js';
 import {default as chai} from 'chai';
 
 const should = chai.should();
@@ -87,8 +87,13 @@ describe('Simple test for functions computing single statistic.', function () {
    });
 
    it('skewness() returns correct results.', function() {
+      skewness([0, 1, 2]).should.be.closeTo(0, 0.0000001);
       skewness([-10, 1, 2]).should.be.closeTo(-0.6892055, 0.0000001);
       skewness([10, 1, 2]).should.be.closeTo(0.6745555, 0.0000001);
+   })
+
+   it('kurtosis() returns correct results.', function() {
+      kurtosis([1, 2, 3]).should.be.closeTo(1.5, 0.0000001);
    })
 
 });

@@ -3,7 +3,26 @@
  **********************************************/
 
 /**
- * Finds computes skewness of values
+ * Computes kurtosis of values
+ * @param {number[]} x - vector with values
+ * @returns {number}
+ */
+export function kurtosis(x) {
+   let n = x.length;
+   let m = mean(x);
+
+   let m4 = 0.0;
+   let m2 = 0.0;
+   for (let i = 0; i < n; i++) {
+      m2 = m2 + Math.pow((x[i] - m), 2);
+      m4 = m4 + Math.pow((x[i] - m), 4);
+   }
+
+   return (m4/n) / Math.pow((m2/n), 2);
+}
+
+/**
+ * Computes skewness of values
  * @param {number[]} x - vector with values
  * @returns {number}
  */
@@ -20,7 +39,6 @@ export function skewness(x) {
 
    return (m3/n) / Math.pow((m2/n), 1.5);
 }
-
 
 /**
  * Finds smallest value in a vector
