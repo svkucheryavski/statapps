@@ -16,7 +16,8 @@ Following functions compute different statistics for one or two vectors and resu
 * `mean(x)` — mean (average) value.
 * `sd(x, biased = false)` — standard deviation.
 * `quantile(x, p)` — p-th quantile (0 > p > 1).
-
+* `skewness(x)` — skewness (measure of symmetry)
+* `kurtosis(x)` — kurtosis (measure of tailedness)
 
 Following functions compute and return a vector with statistics.
 
@@ -27,7 +28,8 @@ Following functions compute and return a vector with statistics.
 * `mids(x)` — return a vector with middle points between the adjacent values from `x`.
 * `diff(x)` — return a vector with difference between adjacent values (e.g. `x[1] - x[0]`, ...).
 * `getOutliers(x, Q1, Q3)` — finds outliers in `x` based on 1.5 IQR rule (like in boxplots).
-
+* `seq()` !!!
+* `ppoints()` !!!
 
 Not implemented yet
 * `rank(x)` — return vector with ranks of values from `x`.
@@ -49,12 +51,12 @@ The package has support for several known theoretical distributions. Every distr
 #### Uniform distribution
 * `dunif(x, a = 0, b = 1)` — `x` is a vector of values, `a` and `b` — distribution parameters.
 * `punif(x, a = 0, b = 1)` — same as for `dunif`
-* `qunif(p, a = 0, b = 1)` — `p` is a probability for the needed quantile, can be a vector.
+!!!* `qunif(p, a = 0, b = 1)` — `p` is a probability for the needed quantile, can be a vector.
 * `runif(n, a = 0, b = 1)` — `n` is a number of values to generate.
 
 #### Normal distribution
 * `dnorm(x, mean = 0, sd = 1)`
 * `pnorm(x, mean = 0, sd = 1)`
-* `qnorm(p, mean = 0, sd = 1)`
+!!!* `qnorm(p, mean = 0, sd = 1)`
 * `rnorm(n, mean = 0, sd = 1)`
 
