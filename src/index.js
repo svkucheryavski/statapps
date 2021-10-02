@@ -99,10 +99,15 @@ export function sd(x, biased = false, m = undefined) {
 /**
  * Computes a p-th quantile for a numeric vector
  * @param {number[]} x - vector with values
- * @param {number} p - probability
+ * @param {number|number[]} p - probability (one value or a vector)
  * @returns {number}
  */
 export function quantile(x, p) {
+
+   // if p is a vector call this function recursively for each p and return a vector
+   if (Array.isArray(p)) {
+      return p.map(v => quantile(x, v));
+   }
 
    if (typeof(p) !== "number" || p < 0 || p > 1) {
       throw("Parameter 'p' must be between 0 and 1 (both included).");
