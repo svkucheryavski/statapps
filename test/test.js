@@ -2,10 +2,12 @@
 import {min, max, sum, mean, sd, quantile, skewness, kurtosis} from '../src/index.js';
 import {range, mrange, split, count, mids, diff, sort, getOutliers, seq, ppoints} from '../src/index.js';
 import {runif, rnorm, dnorm, dunif, pnorm, punif} from '../src/index.js';
+import {rep} from '../src/index.js';
 import {default as chai} from 'chai';
 
 const should = chai.should();
 const expect = chai.expect;
+
 
 describe('Simple test for functions computing single statistic.', function () {
 
@@ -273,6 +275,8 @@ describe('Simple test for functions computing vectors with statistics.', functio
    });
 });
 
+describe('Test for functions computing vectors with statistics for n = 1 000 000.', function () {
+})
 
 describe('Tests for theoretical distribution functions.', function () {
 
