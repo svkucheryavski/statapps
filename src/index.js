@@ -231,7 +231,7 @@ export function count(x, bins) {
  * @param {number[]} x - vector with values
  * @returns {number[]} vector with middle points
  */
-export const mids = function(x) {
+export function mids(x) {
    return x.slice(1).map((v, i) => (0.5 * (v + x[i])));
 }
 
