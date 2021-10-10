@@ -98,6 +98,32 @@ describe('Simple test for functions computing single statistic.', function () {
 
 });
 
+describe('Functions computing single statistic work with n = 1 000 000.', function () {
+   const xxl = runif(1000000, 10, 20);
+
+   it('min() is fast enough.', function() {
+      min(xxl).should.be.closeTo(10, 0.01);
+   })
+
+   it('max() is fast enough.', function() {
+      max(xxl).should.be.closeTo(20, 0.01);
+   })
+
+   it('mean() is fast enough.', function() {
+      mean(xxl).should.be.closeTo(15, 0.01);
+   })
+
+   it('skewness() is fast enough.', function() {
+      skewness(xxl).should.be.closeTo(0, 0.01);
+   })
+
+   it('kurtosis() is fast enough.', function() {
+      kurtosis(xxl).should.be.closeTo(1.8, 0.01);
+   })
+
+})
+
+
 describe('Simple test for functions computing vectors with statistics.', function () {
 
    const x1 = [-10, -2, 0, 2, 10, 20, 50, 100, 150];
