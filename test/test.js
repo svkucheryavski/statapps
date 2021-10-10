@@ -1,5 +1,5 @@
 
-import {min, max, sum, mean, sd, quantile, skewness, kurtosis} from '../src/index.js';
+import {min, max, sum, prod, mean, sd, quantile, skewness, kurtosis} from '../src/index.js';
 import {range, mrange, split, count, mids, diff, sort, getOutliers, seq, ppoints} from '../src/index.js';
 import {runif, rnorm, dnorm, dunif, pnorm, punif} from '../src/index.js';
 import {rep} from '../src/index.js';
@@ -60,6 +60,13 @@ describe('Simple test for functions computing single statistic.', function () {
       sum(x1).should.be.closeTo(sm1, 0.0000001);
       sum(x2).should.be.closeTo(sm2, 0.0000001);
       sum(x3).should.be.closeTo(sm3, 0.0000001);
+   });
+
+   it('prod() returns correct results.', function () {
+      prod([1, 2, 3, 4, 5]).should.be.a('number');
+      prod([1, 2, 3, 4, 5]).should.be.closeTo(120, 0.0000000001);
+      prod([10]).should.be.a('number');
+      prod([10]).should.be.closeTo(10, 0.0000000001);
    });
 
    it('mean() returns correct results.', function () {

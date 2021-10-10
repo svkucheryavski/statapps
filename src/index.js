@@ -75,6 +75,16 @@ export function sum(x) {
    return x.reduce((t, v) => t + v);
 }
 
+
+/**
+ * Computes product of all value in a vector
+ * @param {number[]} x - vector with values
+ * @returns {number}
+ */
+export function prod(x) {
+   return x.reduce((t, v) => t * v);
+}
+
 /**
  * Computes mean (average) value for a vector
  * @param {number[]} x - vector with values
