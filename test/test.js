@@ -389,3 +389,53 @@ describe('Tests for theoretical distribution functions.', function () {
 
 });
 
+describe('Tests for replicate functions.', function () {
+
+   it('rep() works correctly with one value.', function () {
+
+      const y1 = rep(10, 3);
+      y1.should.be.a('Array');
+      expect(y1).to.have.lengthOf(3);
+      expect(y1).to.eql([10, 10, 10]);
+
+      const y2 = rep(20, 1);
+      y2.should.be.a('Array');
+      expect(y2).to.have.lengthOf(1);
+      expect(y2).to.eql([20]);
+
+      const y3 = rep(30, 1000000);
+      y3.should.be.a('Array');
+      expect(y3).to.have.lengthOf(1000000);
+      expect(y3[1]).to.eql(30);
+      expect(y3[100]).to.eql(30);
+      expect(y3[10000]).to.eql(30);
+      expect(y3[100000]).to.eql(30);
+
+   })
+
+   it('rep() works correctly with one vector of numbers.', function () {
+
+      const y1 = rep([10, 20], 3);
+      y1.should.be.a('Array');
+      expect(y1).to.have.lengthOf(6);
+      expect(y1).to.eql([10, 20, 10, 20, 10, 20]);
+
+      const y2 = rep([10, 20], 1);
+      y2.should.be.a('Array');
+      expect(y2).to.have.lengthOf(2);
+      expect(y2).to.eql([10, 20]);
+
+      const y3 = rep([30, 40], 1000000);
+      y3.should.be.a('Array');
+      expect(y3).to.have.lengthOf(2000000);
+      expect(y3[0]).to.eql(30);
+      expect(y3[1]).to.eql(40);
+      expect(y3[100]).to.eql(30);
+      expect(y3[101]).to.eql(40);
+      expect(y3[10000]).to.eql(30);
+      expect(y3[10001]).to.eql(40);
+      expect(y3[100000]).to.eql(30);
+      expect(y3[100001]).to.eql(40);
+   })
+
+});

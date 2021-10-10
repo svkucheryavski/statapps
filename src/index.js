@@ -445,3 +445,30 @@ export function ppoints(n) {
    const a = n < 10 ? 3.0/8.0 : 0.5;
    return Array.from({length: n}, (v, i) => (i + 1 - a) / (n + (1 - a) - a));
 }
+
+
+/*******************************************
+ * Other functions                         *
+ *******************************************/
+
+/**
+ * Replicates values in x n times
+ * @param {any} x - single value or a vector with values
+ * @param {number} n - how many times to replicate
+ */
+export function rep(x, n) {
+   if (!Array.isArray(x)) x = [x];
+   if (n <= 1) return x;
+   const nx = x.length;
+
+   x.length = nx * n
+   for (let i = 0; i < n - 1; i ++) {
+      for (let j = 0; j < nx; j++) {
+         x[nx * (i + 1) + j] = x[j];
+      }
+   }
+
+   return x;
+}
+
+
