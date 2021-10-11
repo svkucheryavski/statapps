@@ -2,7 +2,7 @@
 import {min, max, sum, prod, mean, sd, quantile, skewness, kurtosis} from '../src/index.js';
 import {range, mrange, split, count, mids, diff, sort, getOutliers, seq, ppoints} from '../src/index.js';
 import {runif, rnorm, dnorm, dunif, pnorm, punif} from '../src/index.js';
-import {rep, subset} from '../src/index.js';
+import {rep, subset, expandGrid} from '../src/index.js';
 import {default as chai} from 'chai';
 
 const should = chai.should();
@@ -577,3 +577,30 @@ describe('Tests for subset() function.', function () {
    })
 });
 
+describe('Tests for expandGrid() function.', function () {
+   it('expandGrid() works correctly with numeric vectors.', function () {
+
+      const z1 = expandGrid([100, 200, 300], [10, 20]);
+      z1.should.be.a('Array');
+      expect(z1).to.have.lengthOf(2);
+      expect(z1[0]).to.eql([100, 200, 300, 100, 200, 300]);
+      expect(z1[1]).to.eql([10, 10, 10, 20, 20, 20]);
+
+      const z2 = expandGrid([100, 200, 300], [10, 20], [-20, +20]);
+      z2.should.be.a('Array');
+      expect(z2).to.have.lengthOf(3);
+      expect(z2[0]).to.eql([100, 200, 300, 100, 200, 300, 100, 200, 300, 100, 200, 300]);
+      expect(z2[1]).to.eql([10, 10, 10, 20, 20, 20, 10, 10, 10, 20, 20, 20]);
+      expect(z2[2]).to.eql([-20, -20, -20, -20, -20, -20, 20, 20, 20, 20, 20, 20]);
+
+   })
+
+   it('expandGrid() works correctly with text vectors.', function () {
+      const z1 = expandGrid([100, 200, 300], ["A", "B"]);
+      z1.should.be.a('Array');
+      expect(z1).to.have.lengthOf(2);
+      expect(z1[0]).to.eql([100, 200, 300, 100, 200, 300]);
+      expect(z1[1]).to.eql(["A", "A", "A", "B", "B", "B"]);
+   })
+
+});

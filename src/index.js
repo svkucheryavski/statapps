@@ -518,17 +518,18 @@ export function expandGrid(...args) {
 
    const nargs = args.length;
    const d = args.map(v => v.length);
-   const orep = prod(d);
+   let orep = prod(d);
 
    let grid = Array(nargs);
    let repFac = 1;
+
    for (let i = 0; i < nargs; i++) {
       const x = args[i];
-      const nx = length(x);
-      const orep = orep/nx;
-
-      x <- x[rep(rep(seq(1, nx), rep(repFac, nx)), orep)];
+      const nx = x.length;
+      orep = orep/nx;
+      grid[i] = subset(x, rep(rep(seq(1, nx, nx), rep(repFac, nx)), orep));
       repFac = repFac * nx;
-      grid[[i]] <- x
    }
+
+   return grid;
 }
