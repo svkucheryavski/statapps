@@ -148,8 +148,8 @@ export function quantile(x, p) {
  */
 export function seq(min, max, n) {
 
-   if (n < 3) {
-      throw new Error("Parameter 'n' should be larger than 3.");
+   if (n < 2) {
+      throw new Error("Parameter 'n' should be ≥ 2.");
    }
 
    const step = (max - min + 0.0) / (n - 1 + 0.0)
@@ -472,10 +472,24 @@ export function sort(x, decreasing = false) {
  */
 export function rep(x, n) {
 
+
+   if (Array.isArray(n)) {
+      if (x.length != n.length) {
+         throw new Error("Parameter 'n' should be a single value or a vector of the same length as x.");
+      }
+
+      let out = [];
+      for (let i = 0; i < n.length; i++) {
+         out.push(...rep([x[i]], n[i]));
+      }
+
+      return out;
+   }
+
    if (!Array.isArray(x)) x = [x];
    if (n <= 1) return x;
-   const nx = x.length;
 
+   const nx = x.length;
    x.length = nx * n
    for (let i = 0; i < n - 1; i ++) {
       for (let j = 0; j < nx; j++) {
