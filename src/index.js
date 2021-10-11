@@ -103,7 +103,7 @@ export function mean(x) {
  */
 export function sd(x, biased = false, m = undefined) {
    if (m === undefined) m = mean(x)
-   return Math.sqrt(sum(x.map(v => (v - m)**2 )) / (x.length - (biased ? 0 : 1)));
+   return Math.sqrt(sum(x.map(v => (v - m) ** 2 )) / (x.length - (biased ? 0 : 1)));
 }
 
 
@@ -236,7 +236,15 @@ export function count(x, bins) {
 
    // add a bit extra to right side of the last bin
    bins[n - 1] = bins[n - 1] * 1.0001
-   return bins.slice(1).map((v, i) => x.filter( v => v >= bins[i] & v < bins[i + 1]).length);
+
+   // count
+   let counts = Array(n - 1).fill(0);
+   for (let i = 0; i < x.length; i++) {
+      for (let j = 0; j < n - 1; j++) {
+         if (x[i] >= bins[j] && x[i] < bins[j + 1]) counts[j] = counts[j] + 1;
+      }
+   }
+   return counts;
 }
 
 /**
@@ -255,15 +263,6 @@ export function mids(x) {
  */
 export function diff(x) {
    return x.slice(1).map( (y, i) => (y - x[i]));
-}
-
-/**
- * Sorts values in a vector
- * @param {Array} x - vector with values
- * @returns {Array} vector with sorted values
- */
-export function sort(x, decreasing = false) {
-   return decreasing ? x.sort((a, b) => b - a) : x.sort((a, b) => a - b);
 }
 
 
@@ -297,8 +296,8 @@ export function getOutliers(x, Q1 = undefined, Q3 = undefined) {
  * @returns {number[]} vector with generated numbers
  */
 export function runif(n, a = 0, b = 1) {
-   let out = [];
-   for (let i = 0; i < n; i++) out.push(a + Math.random() * (b - a));
+   let out = Array(n);
+   for (let i = 0; i < n; i++) out[i] = (a + Math.random() * (b - a));
    return out;
 }
 
@@ -310,9 +309,8 @@ export function runif(n, a = 0, b = 1) {
  * @returns {Array} vector with densities
  */
 export function dunif(x, a = 0, b = 1) {
-   if (!Array.isArray(x)) {
-      throw("Parameter 'x' must be an array.")
-   }
+
+   if (!Array.isArray(x)) x = [x];
 
    const n = x.length;
    const A = 1 / (b - a);
@@ -334,13 +332,10 @@ export function dunif(x, a = 0, b = 1) {
  */
 export function punif(x, a = 0, b = 1) {
 
-   if (!Array.isArray(x)) {
-      throw("Parameter 'x' must be an array.")
-   }
+   if (!Array.isArray(x)) x = [x];
 
    const n = x.length;
    let p = Array(n);
-
    for (let i = 0; i < n; i++) {
       if (x[i] < a) {
          p[i] = 0;
@@ -384,9 +379,7 @@ export function rnorm(n, mu = 0, sigma = 1) {
  */
 export function dnorm(x, mu = 0, sigma = 1) {
 
-   if (!Array.isArray(x)) {
-      throw("Parameter 'x' must be an array.");
-   }
+   if (!Array.isArray(x)) x = [x];
 
    const n = x.length;
    const A = 1 / (Math.sqrt(2 * Math.PI) * sigma);
@@ -410,9 +403,7 @@ export function dnorm(x, mu = 0, sigma = 1) {
  */
 export function pnorm(x, mu = 0, sigma = 1) {
 
-   if (!Array.isArray(x)) {
-      throw("Parameter 'x' must be an array.");
-   }
+   if (!Array.isArray(x)) x = [x];
 
    const n = x.length;
    const frac = 1 / (Math.sqrt(2) * sigma);
@@ -464,12 +455,23 @@ export function ppoints(n) {
  * Other functions                         *
  *******************************************/
 
+
+/**
+ * Sorts values in a vector
+ * @param {Array} x - vector with values
+ * @returns {Array} vector with sorted values
+ */
+export function sort(x, decreasing = false) {
+   return decreasing ? x.sort((a, b) => b - a) : x.sort((a, b) => a - b);
+}
+
 /**
  * Replicates values in x n times
  * @param {any} x - single value or a vector with values
  * @param {number} n - how many times to replicate
  */
 export function rep(x, n) {
+
    if (!Array.isArray(x)) x = [x];
    if (n <= 1) return x;
    const nx = x.length;
@@ -507,3 +509,26 @@ export function subset(x, indices) {
    return out;
 }
 
+/**
+ * Generate combination of all levels of two vectors
+ * @param {number[]} a - a vector with unique values
+ * @param {number[]} b - a vector with unique values
+ */
+export function expandGrid(...args) {
+
+   const nargs = args.length;
+   const d = args.map(v => v.length);
+   const orep = prod(d);
+
+   let grid = Array(nargs);
+   let repFac = 1;
+   for (let i = 0; i < nargs; i++) {
+      const x = args[i];
+      const nx = length(x);
+      const orep = orep/nx;
+
+      x <- x[rep(rep(seq(1, nx), rep(repFac, nx)), orep)];
+      repFac = repFac * nx;
+      grid[[i]] <- x
+   }
+}

@@ -2,7 +2,7 @@
 import {min, max, sum, prod, mean, sd, quantile, skewness, kurtosis} from '../src/index.js';
 import {range, mrange, split, count, mids, diff, sort, getOutliers, seq, ppoints} from '../src/index.js';
 import {runif, rnorm, dnorm, dunif, pnorm, punif} from '../src/index.js';
-import {rep} from '../src/index.js';
+import {rep, subset} from '../src/index.js';
 import {default as chai} from 'chai';
 
 const should = chai.should();
@@ -81,18 +81,6 @@ describe('Simple test for functions computing single statistic.', function () {
       sd(x1).should.be.closeTo(sd1, 0.000001);
       sd(x1, true).should.be.closeTo(sd1b, 0.000001);
       sd(x1, false, mean(x1)).should.be.closeTo(sd1, 0.000001);
-   });
-
-   it('quantile() returns correct results.', function () {
-      quantile(x1, 0.01).should.be.a('number');
-      quantile(x1, 0).should.equal(mn1);
-      quantile(x1, 1).should.equal(mx1);
-
-      quantile(x1, 0.25).should.be.closeTo(Q1, 0.000001);
-      quantile(x1, 0.50).should.be.closeTo(Q2, 0.000001);
-      quantile(x1, 0.75).should.be.closeTo(Q3, 0.000001);
-      quantile(x1, 0.10).should.be.closeTo(P10, 0.000001);
-      quantile(x1, 0.90).should.be.closeTo(P90, 0.000001);
    });
 
    it('skewness() returns correct results.', function() {
@@ -187,6 +175,14 @@ describe('Simple test for functions computing vectors with statistics.', functio
       r[1].should.equal(max(x1));
    });
 
+   it('range() works with large vectors (n = 1 000 000).', function () {
+      const r = range(y);
+      r.should.be.a('Array');
+      r.should.have.lengthOf(2);
+      r[0].should.equal(min(y));
+      r[1].should.equal(max(y));
+   });
+
    it('mrange() returns correct results.', function () {
       const dx = (max(x1) - min(x1));
       const margin1 = 0.1;
@@ -222,6 +218,20 @@ describe('Simple test for functions computing vectors with statistics.', functio
       s2[4].should.equal(max(x1));
    });
 
+   it('split() works with large vectors (n = 1 000 000).', function () {
+      const s1 = split(y, 2);
+      s1.should.be.a('Array');
+      s1.should.have.lengthOf(3);
+      s1[0].should.equal(min(y));
+      s1[1].should.equal(min(y) + (max(y) - min(y)) / 2);
+      s1[2].should.equal(max(y));
+
+      const s2 = split(y, 100);
+      s2.should.be.a('Array');
+      s2.should.have.lengthOf(101);
+
+   });
+
    it('count() returns correct results.', function () {
       const bins1 = [-20, 0, 200];
       const c1 = count(x1, bins1);
@@ -237,6 +247,18 @@ describe('Simple test for functions computing vectors with statistics.', functio
       c2[0].should.equal(2);
       c2[1].should.equal(4);
       c2[2].should.equal(3);
+   });
+
+   it('count() works with large vectors (n = 1 000 000).', function () {
+      const bins = [10, 12, 14, 16, 18, 20];
+      const c = count(y, bins);
+      c.should.be.a('Array');
+      c.should.have.lengthOf(5);
+      c[0].should.be.closeTo(200000, 2000);
+      c[1].should.be.closeTo(200000, 2000);
+      c[2].should.be.closeTo(200000, 2000);
+      c[3].should.be.closeTo(200000, 2000);
+      c[4].should.be.closeTo(200000, 2000);
    });
 
    it('mids() returns correct results.', function () {
@@ -321,9 +343,6 @@ describe('Simple test for functions computing vectors with statistics.', functio
       p4[10].should.be.closeTo(0.95454545, 0.0000001);
    });
 });
-
-describe('Test for functions computing vectors with statistics for n = 1 000 000.', function () {
-})
 
 describe('Tests for theoretical distribution functions.', function () {
 
