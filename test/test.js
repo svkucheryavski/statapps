@@ -565,7 +565,9 @@ describe('Tests for subset() function.', function () {
       expect(subset(x, [1, 2, 3])).to.eql([10, 20, 30]);
       expect(subset(x, [3, 7, 9])).to.eql([30, 70, 90]);
       expect(subset(x, [10, 9, 8, 7, 6, 1])).to.eql([100, 90, 80, 70, 60, 10]);
-   })
+   it('subset() works correctly with repeated indices.', function () {
+      expect(subset(x, [1, 1, 2, 2, 3, 3])).to.eql([10, 10, 20, 20, 30, 30]);
+   });
 
    const y = sort(runif(1000000, 10, 20));
    it('subset() works correctly with large vectors (n = 1 000 000).', function () {
