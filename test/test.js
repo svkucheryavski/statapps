@@ -135,9 +135,49 @@ describe('Functions computing single statistic work with n = 1 000 000.', functi
 
 describe('Simple test for functions computing vectors with statistics.', function () {
 
+   const x = [2.001, 2, 1, 0, -1, -2, -2.008];
+   const Q1 = -1.5;        // 25% percentile for x1
+   const Q2 = 0;           // 50% percentile for x1
+   const Q3 = 1.5;         // 75% percentile for x1
+   const P10 = -2.0032;    // 10% percentile for x1
+   const P90 = 2.0004;     // 90% percentile for x1
+
    const x1 = [-10, -2, 0, 2, 10, 20, 50, 100, 150];
    const x2 = [150, -2, 100, 2, 50, 0, 10, 20, -10];
    const x3 = [150, 100, 50, 20, 10, 2, 0, -2, -10];
+
+   const y = runif(1000000, 10, 20);
+
+   it('quantile() returns correct results.', function () {
+
+      expect(() => quantile(x, -0.01)).to.throw(Error, "Parameter 'p' must be between 0 and 1 (both included).");
+      expect(() => quantile(x, 1.00001)).to.throw(Error, "Parameter 'p' must be between 0 and 1 (both included).");
+
+      quantile(x, 0.01).should.be.a('number');
+      quantile(x, 0).should.equal(min(x));
+      quantile(x, 1).should.equal(max(x));
+
+      quantile(x, 0.25).should.be.closeTo(Q1, 0.000001);
+      quantile(x, 0.50).should.be.closeTo(Q2, 0.000001);
+      quantile(x, 0.75).should.be.closeTo(Q3, 0.000001);
+      quantile(x, 0.10).should.be.closeTo(P10, 0.000001);
+      quantile(x, 0.90).should.be.closeTo(P90, 0.000001);
+   });
+
+   it('quantile() works with vectors of probabilities.', function () {
+      expect(() => quantile(x, [0.2, 0.4, -0.01])).to.throw(Error, "Parameter 'p' must be between 0 and 1 (both included).");
+      expect(() => quantile(x, [0.2, 1.00001, 0.4])).to.throw(Error, "Parameter 'p' must be between 0 and 1 (both included).");
+
+      const p = quantile(x, [0.25, 0.50, 0.75, 0.10, 0.90]);
+      expect(p).to.eql([Q1, Q2, Q3, P10, P90]);
+   });
+
+   it('quantile() works with large vectors (n = 1 000 000).', function () {
+      const p = quantile(y, [0.25, 0.50, 0.75]);
+      p[0].should.be.closeTo(12.5, 0.1);
+      p[1].should.be.closeTo(15.0, 0.1);
+      p[2].should.be.closeTo(17.5, 0.1);
+   });
 
    it('range() returns correct results.', function () {
       const r = range(x1);

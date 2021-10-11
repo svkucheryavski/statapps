@@ -106,35 +106,38 @@ export function sd(x, biased = false, m = undefined) {
    return Math.sqrt(sum(x.map(v => (v - m)**2 )) / (x.length - (biased ? 0 : 1)));
 }
 
+
+/***************************************************
+ * Functions for computing vectors of statistics   *
+ ***************************************************/
+
 /**
- * Computes a p-th quantile for a numeric vector
+ * Computes a p-th quantile/quantiles for a numeric vector
  * @param {number[]} x - vector with values
  * @param {number|number[]} p - probability (one value or a vector)
  * @returns {number}
  */
 export function quantile(x, p) {
 
-   // if p is a vector call this function recursively for each p and return a vector
-   if (Array.isArray(p)) {
-      return p.map(v => quantile(x, v));
-   }
-
-   if (typeof(p) !== "number" || p < 0 || p > 1) {
-      throw("Parameter 'p' must be between 0 and 1 (both included).");
-   }
-
    x = sort(x);
    const n = x.length;
-   const h = (n - 1) * p + 1;
-   const n1 = Math.floor(h);
-   const n2 = Math.ceil(h);
 
-   return x[n1 - 1] + (x[n2 - 1] - x[n1 - 1]) * (h - Math.floor(h));
+   if (!Array.isArray(p)) p = [p];
+   if (typeof(p[0]) !== "number" || min(p) < 0 || max(p) > 1) {
+      throw new Error("Parameter 'p' must be between 0 and 1 (both included).");
+   }
+
+   function q(x, p) {
+      const h = (n - 1) * p + 1;
+      const n1 = Math.floor(h);
+      const n2 = Math.ceil(h);
+      return x[n1 - 1] + (x[n2 - 1] - x[n1 - 1]) * (h - Math.floor(h));
+   }
+
+   const out =  p.map(v => q(x, v));
+   return p.length == 1 ? out[0] : out;
 }
 
-/***************************************************
- * Functions for computing vectors of statistics   *
- ***************************************************/
 
 /**
  * Generate a sequence of n numbers between min and max.
