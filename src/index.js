@@ -481,4 +481,26 @@ export function rep(x, n) {
    return x;
 }
 
+/**
+ * Create a subset of vectors based on a vector of indices
+ * @param {number[]} x - a vector with values
+ * @param {number[]} indices - a vector with element indices
+ */
+export function subset(x, indices) {
+
+   if (!Array.isArray(x)) x = [x];
+   if (!Array.isArray(indices)) indices = [indices];
+
+   if (max(indices) > x.length || min(indices) < 1) {
+      throw new Error("Parameter 'indices' must have values between 1 and 'x.length'.");
+   }
+
+   const n = indices.length;
+   let out = Array(n);
+   for (let i = 0; i < n; i++) {
+      out[i] = x[indices[i] - 1];
+   }
+
+   return out;
+}
 
