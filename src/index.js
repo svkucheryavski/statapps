@@ -149,7 +149,7 @@ export function quantile(x, p) {
 export function seq(min, max, n) {
 
    if (n < 3) {
-      throw("Parameter 'n' should be larger than 3.")
+      throw new Error("Parameter 'n' should be larger than 3.");
    }
 
    const step = (max - min + 0.0) / (n - 1 + 0.0)
@@ -197,18 +197,18 @@ export function mrange(x, margin) {
  */
 export function split(x, n) {
    if (x === undefined || !Array.isArray(x) || x.length < 2) {
-      throw("split: 'x' must bet a vector with numbers.")
+      throw new Error("split: 'x' must bet a vector with numbers.");
    }
 
    if (n === undefined || n < 2) {
-      throw("split: 'n' must be a positive integer number.");
+      throw new Erro("split: 'n' must be a positive integer number.");
    }
 
    const mn = min(x);
    const mx = max(x);
 
    if (mn === mx) {
-      throw("split: values in a vector 'x' should vary.");
+      throw new Error("split: values in a vector 'x' should vary.");
    }
 
    const step = (mx - mn) / n;
@@ -225,11 +225,11 @@ export function split(x, n) {
 export function count(x, bins) {
 
    if (x === undefined || !Array.isArray(x) ||x.length < 2) {
-      throw("count: 'x' must be a vector with numbers.")
+      throw new Error("count: 'x' must be a vector with numbers.")
    }
 
    if (bins === undefined || !Array.isArray(bins) || bins.length < 2) {
-      throw("count: 'bins' must be a vector with numbers.")
+      throw new Error("count: 'bins' must be a vector with numbers.")
    }
 
    const n = bins.length;
